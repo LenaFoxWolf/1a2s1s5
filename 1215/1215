@@ -1,0 +1,203 @@
+import telebot
+import json
+import os
+from telebot import types
+
+# id()
+token = '638056004:AAF7L3CzsWOAODQQNhq9nRJzIoSag-SeSw0'
+bot = telebot.TeleBot(token)
+
+
+@bot.message_handler(commands=['start'])
+def handle_start(message):
+    user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
+    #user_markup.row("/start", "/stop")
+    user_markup.row("/Вегетарианскую")
+    user_markup.row("/Китайскую")
+    user_markup.row("Хочу в бар")
+    user_markup.row('Хочу в кафе')
+    user_markup.row("Хочу посетить крутые арт-пространства")
+    user_markup.row("Хочу посмотреть достопримечательности")
+    user_markup.row('Хочу посетить крутые выставки')
+    user_markup.row('Предстоящие мероприятия')
+    bot.send_message(message.from_user.id, "Напиши мне Привет", reply_markup=user_markup)
+
+@bot.message_handler(commands=['/Вегетарианскую'])
+def inline (message):
+
+            key = types.InlineKeyboardMarkup()
+            but_1 = types.InlineKeyboardButton(text='«Укроп»', callback_data="«Укроп»")
+            but_2 = types.InlineKeyboardButton(text='«RA Family»', callback_data='«RA Family»')
+            but_3 = types.InlineKeyboardButton(text='«Jiva Burgers»', callback_data='«Jiva Burgers»')
+            but_4 = types.InlineKeyboardButton(text='«Ботаника»', callback_data='«Ботаника»')
+            key.add(but_1,but_2,but_3, but_4)
+            bot.send_message(message.chat.id, "Узнайте подробнее об этих местах:",reply_markup=key)
+
+@bot.callback_query_handler(func=lambda c:True)
+def inline(c):
+    if c.data == "«Укроп»":
+        bot.send_location(message.chat.id, 59.93424, 30.3072366)
+
+        #bot.send_message(c.message.chat.id, 'описание:Популярное заведение\
+        #для вегетарианцев, веганов и сыроедов. Эко-интерьер, креативное меню с гречотто и фрикадельками из зеленого горошка.\n'
+         #                                   'Адрес: ул. Малая Конюшенная, д. 14')
+
+
+
+
+    elif c.data == '«RA Family»':
+        bot.send_message(c.message.chat.id, 'Описание: В самом сердце шумного\
+         города спрятан уютный уголок, где можно укрыться от забот в балийских\
+          джунглях, устроить посиделки с друзьями за полезным ужином, поработать\
+           за чашечкой кофе и просто помедитировать над вкусным смузи, провалившись в мягкий диван.\n'
+                         "Адрес:Кузнечный пер., д. 6")
+
+    elif c.data == '«Jiva Burgers»':
+        bot.send_message(c.message.chat.id, 'Описание:вегетарианская бургерная\
+         (есть роллы) с супами, салатами, десертами и напитками.\n'
+                         "Адрес:наб. канала Грибоедова, д. 49")
+    elif c.data == '«Ботаника»':
+        bot.send_message(c.message.chat.id, "Описание:Спасающий от любой непогоды имбирный\
+         напиток, отличные сэндвичи с моцареллой и пирожки с капустой, ливанский хумус, индийский\
+          суп из гороха маш и японские роллы с тофу. Хочешь — соблюдай веганский режим, не хочешь — бери\
+           пасту с пармезаном и яблочный пирог с черносливом. \n"
+                                            'Адрес:ул. Пестеля, д. 7')
+
+@bot.message_handler(commands=['stop'])
+def handle_stop(message):
+    hide_markup = telebot.types.ReplyKeyboardRemove()
+    bot.send_message(message.from_user.id, "Пока :( ", reply_markup=hide_markup)
+
+
+@bot.message_handler(content_types=['text'])
+def handle_text(message):
+    if message.text == 'Привет':
+
+        directory = 'C:\\Users\\1065\\Desktop\\Lena\\File'
+        all_files_in_directory = os.listdir(directory)
+        print(all_files_in_directory)
+        for file in all_files_in_directory:
+            img = open(directory + '/' + file, 'rb')
+            bot.send_chat_action(message.from_user.id, 'upload_photo')
+            bot.send_photo(message.from_user.id, img)
+            img.close()
+
+        bot.send_message(message.chat.id, "Приветики. Я лучше всех знаю как здорово провести время. Я знаю такие\
+                                          команды как:\n"
+                                          "Хочу в бар\n"
+                                          "Хочу в кафе\n"
+                                          "Хочу посмотреть достопримечательности\n"
+                                          "Хочу посетить крутые арт-пространства\n"
+                                          "Хочу посетить крутые выставки\n"
+                                          'Предстоящие мероприятия')
+
+
+
+    elif message.text == 'Хочу в бар':
+        bot.send_message(message.chat.id, "Хватит бухать! И так уже всю жизнь пропил.Но если тебе все равно\
+ на твое здоровье, то держи список самых топовых баров СпБ:\n"
+                                          "1.Лаборатория 31, ул. Марата 35\n"
+                                          "2.7sky, пер. Ковенский 5\n"
+                                          "3.Безумный Макс, ул. Садовая 12\n"
+                                          "4.Hard Rock Cafe, ул. Садовая 62\n"
+                                          "5.The Playground, ул. Ломоносова \n")
+
+    elif message.text == "Хочу в кафе":
+        bot.send_message(message.chat.id, "Какую кухню вы предпочитаете?:\n"
+                                          "/Китайскую\n"
+                                          "Борщи мне подавай!\n"
+                                          "/Итальянскую\n"
+                                          "/Вегетарианскую\n"
+                                          "Я-студент! Могу выпить кофе за 60 рублей \n")
+
+
+    #elif message.text == 'Вегетарианскую':
+        #with open("food1.json", "r", encoding="utf8") as food1:
+         #   food_list = json.load(food1)
+          #  text = ""
+           # for place in food_list:
+            #    text += food_list[place]["название"] + food_list[place]["адрес"]
+
+
+        bot.send_message(message.chat.id, text)
+
+        #bot.send_location(message.chat.id, 59.93424, 30.3072366)
+
+
+    elif message.text == 'Китайскую':
+        with open("food2.json", "r", encoding="utf8") as food2:
+            food_list = json.load(food2)
+            text = ""
+            for place in food_list:
+                text += food_list[place]["название"] + food_list[place]["адрес"]
+
+
+    elif message.text == 'Борщи мне подавай!':
+        bot.send_message(message.chat.id, '«Русская забава», ул. Гороховая, д. 3\n'
+                                          '«У Горчакова», ул. Большая Монетная, д. 19\n'
+                                          '«Федор Достоевский», Владимирский пр-т, д.9\n'
+                                          '«Садко», Глинки ул., д. 2 \n'
+                                          '«КоКоКо», Вознесенский просп., д. 6')
+
+    elif message.text == 'Я-студент! Могу выпить кофе за 60 рублей':
+        bot.send_message(message.chat.id, '1.Panda coffee & food, пр. Литейный 43\n'
+                                          '2.Камея, 2-ая Советская 21\n'
+                                          '3.Waff&Love, Волынский пер. 4 \n'
+                                          '4.Пышечная на Большой Конюшенной, ул. Большая Конюшенная 25\n'
+                                          '5.City Grill Express, наб. канала Грибоедова 20')
+
+    elif message.text == 'Хочу посетить крутые арт-пространства':
+        bot.send_message(message.chat.id, '1.Креативное пространство Севкабель Порт. (Концепция развития общественного пространства\
+    у воды на базе исторической части завода Simens & Halske / «Севкабель»). Заинтересовало? Переходи на сайт: http://www.sevcableport.ru/\n'
+                                          
+                                          "2.Остров Новая Голландия.(Новая Голландия — памятник культуры и истории федерального\
+                                           значения; парк с современной и удобной инфраструктурой). Заинтересовало? Переходи на сайт: http://www.newhollandsp.ru/events/concerts/kamasi-washington/\n"
+                                          
+                                          "3.Лофт Проект Этажи - выставки. (Арт-пространство Лофт Проект ЭТАЖИ — многофункциональное\
+     арт-пространство на 5 этажах. Здесь можно посмотреть на искусство на выставках, купить его в галереях,\
+     повеселиться на открытиях, поучиться на лекциях и воркшопах, поесть в Кофейне Зеленая Комната,\
+     переночевать в хостеле, провести время с ребенком на «Детском времени» и даже завести четвероногого\
+     друга на акции «Хочу Домой»).Заинтересовало? Переходи на сайт: http://www.loftprojectetagi.ru/?utm_source=peterburg2.ru")
+
+
+    elif message.text == 'Хочу посмотреть достопримечательности':
+        bot.send_message(message.chat.id, "Город с огромным количеством музеев, у которого очень богатая история, который\
+         стремится посетить каждый – это, конечно, Санкт-Петербург. Очень много ценных исторических памятников, достопримечательности\
+    встречаются на каждом шагу. Вот 10 мест, которые вы обязаны посетить:\n"
+                                          '1.Государственный Эрмитаж \n'
+                                          '2.Петергоф\n'
+                                          '3.Спас на Крови\n'
+                                          '4.Петропавловская крепость\n'
+                                          '5.Исаакиевский собор\n'
+                                          '6.Казанский кафедральный собор\n'
+                                          '7.Русский музей\n'
+                                          '8.Летний сад\n'
+                                          '9.Смольный собор\n'
+                                          '10.Юсуповский дворец')
+    elif message.text == 'Хочу посетить крутые выставки':
+        bot.send_message(message.chat.id, '1.«VIVA LA VIDA. ФРИДА КАЛО И ДИЕГО РИВЕРА». «Фрида — это лента, обернутая вокруг бомбы», — так основоположник сюрреализма\
+             Андре Бретон описал искусство и жизнь великой мексиканской художницы Фриды Кало. Ее картины — гремучая смесь мексиканских\
+            народных мотивов и наивного искусства в духе французских модернистов, а в их основе — история боли и любви, страсти\
+            и непонимания, которые сопровождали Фриду всю ее жизнь. Из этого сплава появился образ, который прошел через весь XX\
+            век и стал вызовом устоям западного общества, https://fabergemuseum.ru/ru/news/article/128\n'
+
+                                          '2.Эрарта-«Сесиль Плезанс.Ролевые игры», «Арно Рафаэль Минккинен.Моменты отровения», https://www.erarta.com/\n'
+                         '3.Выставка «Вдохновение Японией», http://www.loftprojectetagi.ru/' )
+    elif message.text == 'Предстоящие мероприятия':
+        bot.send_message(message.chat.id, "Внимание! Этот список действует до конца мая:\n"
+                         "1.сб, 18 мая, Ночь музеев 2019\n"
+                                          "2.вс, 19 мая, Фестиваль <Revolution>\n"
+                                          "3.вс, 19 мая, Полумарафон <Забег>\n"
+                                          "4.пн, 20 мая, Открытие проекта <Бермудский треугольник>\n"
+                                          "5.пн, 20 мая, Выставка <Вдохновение Японией>\n"
+                                          "6.чт, 23 мая, Дамы, драмы и любовь. Водевили А. П. Чехова\n"
+                                          "7.сб, 25 мая, Рок фестиваль <Окна открой>\n"
+                                          "8.сб, 25 мая, Bondage Fairies (Sweden)\n"
+                                          "9.сб, 25 мая, БОЛЬШАЯ DISCOTEKA 90!\n"
+                                          "10.пт, 31 мая, Крематорий\n")
+
+    else:
+        bot.send_message(message.chat.id, 'Скорее всего вы допустили ошибку. Пожалуйста, внимательно изучите команды.')
+
+
+bot.polling(none_stop=True, interval=0)
